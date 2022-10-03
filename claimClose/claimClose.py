@@ -18,7 +18,7 @@ class ClaimThread(commands.Cog):
     @checks.thread_only()
     @commands.command()
     async def claim(self, ctx):
-        if any(role['name'] == 'Corporate Permissions' for role in ctx.author.roles):
+        if any(str(role) == 'Corporate Permissions' for role in ctx.author.roles):
             thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
             if thread is None:
                 await self.db.insert_one({'thread_id': str(ctx.thread.channel.id), 'claimers': [str(ctx.author.id)]})
