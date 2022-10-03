@@ -53,7 +53,7 @@ class ClaimThread(commands.Cog):
         """Remove claim on ticket"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
-            await self.db.delete_one({'thread_id': str(ctx.thread.channel.id)}})
+            await self.db.delete_one({'thread_id': str(ctx.thread.channel.id)})
 
 async def check_reply(ctx):
     thread = await ctx.bot.get_cog('ClaimThread').db.find_one({'thread_id': str(ctx.thread.channel.id)})
