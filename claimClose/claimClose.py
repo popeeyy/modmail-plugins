@@ -13,6 +13,7 @@ class ClaimThread(commands.Cog):
         self.db = self.bot.plugin_db.get_partition(self)
         check_reply.fail_msg = 'This thread has been claimed by another user.'
         self.bot.get_command('close').add_check(check_reply)
+        self.bot.get_command('areply').add_check(check_reply)
 
     @checks.has_permissions(PermissionLevel.OWNER)
     @checks.thread_only()
