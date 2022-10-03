@@ -32,7 +32,7 @@ class ClaimThread(commands.Cog):
     async def addclaim(self, ctx, *, member: discord.Member):
         """Adds another user to the thread claimers"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
-        if thread and str(ctx.author.id) in thread['claimers']:
+        if thread and any(str(role) == 'Corporate Permissions' for role in ctx.author.roles):
             await self.db.find_one_and_update({'thread_id': str(ctx.thread.channel.id)}, {'$addToSet': {'claimers': str(member.id)}})
             await ctx.send('Added to claimers')
 
@@ -42,7 +42,7 @@ class ClaimThread(commands.Cog):
     async def removeclaim(self, ctx, *, member: discord.Member):
         """Removes a user from the thread claimers"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
-        if thread and str(ctx.author.id) in thread['claimers']:
+        if thread and any(str(role) == 'Corporate Permissions' for role in ctx.author.roles):
             await self.db.find_one_and_update({'thread_id': str(ctx.thread.channel.id)}, {'$pull': {'claimers': str(member.id)}})
             await ctx.send('Removed from claimers')
 
@@ -52,7 +52,7 @@ class ClaimThread(commands.Cog):
     async def unclaim(self, ctx):
         """Remove claim on ticket"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
-        if thread and str(ctx.author.id) in thread['claimers']:
+        if thread and any(str(role) == 'Corporate Permissions' for role in ctx.author.roles):
             await self.db.delete_one({ 'thread_id': str(ctx.thread.channel.id) })
 
 async def check_reply(ctx):
