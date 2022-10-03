@@ -49,7 +49,7 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.OWNER)
     @checks.thread_only()
     @commands.command()
-    async def unclaim(self, ctx, *):
+    async def unclaim(self, ctx):
         """Remove claim on ticket"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
