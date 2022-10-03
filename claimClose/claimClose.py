@@ -54,6 +54,7 @@ class ClaimThread(commands.Cog):
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and any(str(role) == 'Corporate Permissions' for role in ctx.author.roles):
             await self.db.delete_one({ 'thread_id': str(ctx.thread.channel.id) })
+            await ctx.send('Claim removed')
 
 async def check_reply(ctx):
     thread = await ctx.bot.get_cog('ClaimThread').db.find_one({'thread_id': str(ctx.thread.channel.id)})
