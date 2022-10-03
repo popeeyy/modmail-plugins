@@ -49,24 +49,15 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.OWNER)
     @checks.thread_only()
     @commands.command()
-    async def transferclaim(self, ctx, *, member: discord.Member):
-        """Removes all users from claimers and gives another member all control over thread"""
+    async def unclaim(self, ctx, *, member: discord.Member):
+        """Remove claim on ticket"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
-            await self.db.find_one_and_update({'thread_id': str(ctx.thread.channel.id)}, {'$set': {'claimers': [str(member.id)]}})
-            await ctx.send('Added to claimers')
-
-    @checks.has_permissions(PermissionLevel.OWNER)
-    @checks.thread_only()
-    @commands.command()
-    async def overridereply(self, ctx, *, msg: str=""):
-        """Allow mods to bypass claim thread check in reply"""
-        await ctx.invoke(self.bot.get_command('reply'), msg=msg)
-
+            await self.db.delete_one({'thread_id': str(ctx.thread.channel.id)}})
 
 async def check_reply(ctx):
     thread = await ctx.bot.get_cog('ClaimThread').db.find_one({'thread_id': str(ctx.thread.channel.id)})
-    if thread:
+    if thread and len(thread.claimers) > 0:
         print("This is updating!")
         return ctx.author.bot or str(ctx.author.id) in thread['claimers'] or any(str(role) == 'Corporate Permissions' for role in ctx.author.roles)
     return True
